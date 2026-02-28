@@ -311,63 +311,64 @@ inline int update_plane ( const int      periodic,
                           )
     
 {
-    update_internal_plane(oldplane, newplane );
-    update_plane_boundary ( periodic, N, oldplane, newplane );
-// Original version without optimization
-//     uint register fxsize = oldplane->size[_x_]+2;
-//     uint register fysize = oldplane->size[_y_]+2;
+    //update_internal_plane(oldplane, newplane );
+    //update_plane_boundary ( periodic, N, oldplane, newplane );
+    //Original version without optimization
+    uint register fxsize = oldplane->size[_x_]+2;
+    uint register fysize = oldplane->size[_y_]+2;
     
-//     uint register xsize = oldplane->size[_x_];
-//     uint register ysize = oldplane->size[_y_];
+    uint register xsize = oldplane->size[_x_];
+    uint register ysize = oldplane->size[_y_];
     
-//    #define IDX( i, j ) ( (j)*fxsize + (i) )
+   #define IDX( i, j ) ( (j)*fxsize + (i) )
     
-//     // HINT: you may attempt to
-//     //       (i)  manually unroll the loop
-//     //       (ii) ask the compiler to do it
-//     // for instance
-//     // #pragma GCC unroll 4
-//     //
-//     // HINT: in any case, this loop is a good candidate
-//     //       for openmp parallelization
+    // HINT: you may attempt to
+    //       (i)  manually unroll the loop
+    //       (ii) ask the compiler to do it
+    // for instance
+    // #pragma GCC unroll 4
+    //
+    // HINT: in any case, this loop is a good candidate
+    //       for openmp parallelization
 
-//     double * restrict old = oldplane->data;
-//     double * restrict new = newplane->data;
+    double * restrict old = oldplane->data;
+    double * restrict new = newplane->data;
     
-//     for (uint j = 1; j <= ysize; j++)
-//         for ( uint i = 1; i <= xsize; i++)
-//             {
+    #pragma omp parallel for schedule(static) collapse(2)// static schedule for regular grid
+    for (uint j = 1; j <= ysize; j++)
+        for ( uint i = 1; i <= xsize; i++)
+            {
                 
-//                 // NOTE: (i-1,j), (i+1,j), (i,j-1) and (i,j+1) always exist even
-//                 //       if this patch is at some border without periodic conditions;
-//                 //       in that case it is assumed that the +-1 points are outside the
-//                 //       plate and always have a value of 0, i.e. they are an
-//                 //       "infinite sink" of heat
+                // NOTE: (i-1,j), (i+1,j), (i,j-1) and (i,j+1) always exist even
+                //       if this patch is at some border without periodic conditions;
+                //       in that case it is assumed that the +-1 points are outside the
+                //       plate and always have a value of 0, i.e. they are an
+                //       "infinite sink" of heat
                 
-//                 // five-points stencil formula
-//                 //
-//                 // HINT : check the serial version for some optimization
-//                 //
-//                 new[ IDX(i,j) ] =
-//                     old[ IDX(i,j) ] / 2.0 + ( old[IDX(i-1, j)] + old[IDX(i+1, j)] +
-//                                               old[IDX(i, j-1)] + old[IDX(i, j+1)] ) /4.0 / 2.0;
+                // five-points stencil formula
+                //
+                // HINT : check the serial version for some optimization
+                //
+                new[ IDX(i,j) ] =
+                    old[ IDX(i,j) ] / 2.0 + ( old[IDX(i-1, j)] + old[IDX(i+1, j)] +
+                                              old[IDX(i, j-1)] + old[IDX(i, j+1)] ) /4.0 / 2.0;
                 
-//             }
+            }
 
-//     if ( periodic )
-//         {
-//             if ( N[_x_] == 1 )
-//                 {
-//                     // propagate the boundaries as needed
-//                     // check the serial version
-//                 }
+    if ( periodic )
+        {
+            if ( N[_x_] == 1 )
+                {
+                    // propagate the boundaries as needed
+                    // check the serial version
+                }
   
-//             if ( N[_y_] == 1 ) 
-//                 {
-//                     // propagate the boundaries as needed
-//                     // check the serial version
-//                 }
-//         }
+            if ( N[_y_] == 1 ) 
+                {
+                    // propagate the boundaries as needed
+                    // check the serial version
+                }
+        }
 
     
  #undef IDX
@@ -403,9 +404,10 @@ inline int get_total_energy( plane_t *plane,
     //       (ii) ask the compiler to do it
     // for instance
     // #pragma GCC unroll 4
-    for ( int j = 1; j <= ysize; j++ )
-        for ( int i = 1; i <= xsize; i++ )
-            totenergy += data[ IDX(i, j) ];
+    #pragma omp parallel for schedule(static) collapse(2) reduction(+:totenergy)
+        for ( int j = 1; j <= ysize; j++ )
+            for ( int i = 1; i <= xsize; i++ )
+                totenergy += data[ IDX(i, j) ];
 
     
    #undef IDX
