@@ -6,7 +6,7 @@
  */
 
 
-#include "stencil_template_parallel.h"
+#include "stencil_parallel.h"
 
 
 // ------------------------------------------------------------------
