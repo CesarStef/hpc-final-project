@@ -164,11 +164,7 @@ int main(int argc, char **argv)
       /* update grid points */
       
       update_plane( periodic, N, &planes[current], &planes[!current] );
-
-      /* output if needed */
-      if ( output_energy_stat_perstep )
-	output_energy_stat ( iter, &planes[!current], (iter+1) * Nsources*energy_per_source, Rank, &myCOMM_WORLD );
-	
+      
       /* swap plane indexes for the new iteration */
       current = !current;
       
@@ -729,9 +725,6 @@ int memory_allocate (
   
   if ( Me == 0 )
     {
-      if ( step >= 0 )
-	    //printf(" [ step %4d ] ", step ); fflush(stdout);
-
       printf( "total injected energy is %g, "
       "system energy is %g "
       "( in avg %g per grid point)\n",
