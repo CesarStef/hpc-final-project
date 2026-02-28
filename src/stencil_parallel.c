@@ -40,8 +40,8 @@ int main(int argc, char **argv)
     //
     MPI_Init_thread( &argc, &argv, MPI_THREAD_FUNNELED, &level_obtained );
     if ( level_obtained < MPI_THREAD_FUNNELED ) {
-      //printf("MPI_thread level obtained is %d instead of %d\n",
-	     level_obtained, MPI_THREAD_FUNNELED );
+      // printf("MPI_thread level obtained is %d instead of %d\n",
+	    //  level_obtained, MPI_THREAD_FUNNELED );
       MPI_Finalize();
       exit(1); 
     }
@@ -60,8 +60,8 @@ int main(int argc, char **argv)
 
   if ( ret )
   {
-    //printf("task %d is opting out with termination code %d\n",
-      Rank, ret );
+    // printf("task %d is opting out with termination code %d\n",
+    //   Rank, ret );
     
     MPI_Finalize();
     return 0;
@@ -186,9 +186,9 @@ int main(int argc, char **argv)
 
   MPI_Finalize();
 
-  if ( Rank == 0 ) {
-    //printf("Total execution time: %f seconds\n", t1);
-  }
+  // if ( Rank == 0 ) {
+  //   printf("Total execution time: %f seconds\n", t1);
+  // }
 
   return 0;
 }
@@ -312,7 +312,7 @@ int initialize ( MPI_Comm *Comm,
 
 	  case 'h': {
 	    if ( Me == 0 )
-	      //printf( "\nvalid options are ( values btw [] are the default values ):\n"
+	      printf( "\nvalid options are ( values btw [] are the default values ):\n"
 		      "-x    x size of the plate [10000]\n"
 		      "-y    y size of the plate [10000]\n"
 		      "-e    how many energy sources on the plate [4]\n"
@@ -324,10 +324,10 @@ int initialize ( MPI_Comm *Comm,
 	    break;
 	    
 	    
-	  case ':': //printf( "option -%c requires an argument\n", optopt);
+	  case ':': printf( "option -%c requires an argument\n", optopt);
 	    break;
 	    
-	  case '?': //printf(" -------- help unavailable ----------\n");
+	  case '?': printf(" -------- help unavailable ----------\n");
 	    break;
 	  }
       }
@@ -452,23 +452,23 @@ int initialize ( MPI_Comm *Comm,
   if ( verbose > 0 )
     {
       if ( Me == 0 ) {
-	      //printf("Tasks are decomposed in a grid %d x %d\n\n",
-        Grid[_x_], Grid[_y_] );
+	      // printf("Tasks are decomposed in a grid %d x %d\n\n",
+        // Grid[_x_], Grid[_y_] );
         fflush(stdout);
       }
       MPI_Barrier(*Comm);
       for ( int t = 0; t < Ntasks; t++ )
       {
-        if ( t == Me )
-          {
-            //printf("Task %4d :: "
-            "\tgrid coordinates : %3d, %3d\n"
-            "\tneighbours: N %4d    E %4d    S %4d    W %4d\n",
-            Me, X, Y,
-            neighbours[NORTH], neighbours[EAST],
-            neighbours[SOUTH], neighbours[WEST] );
-            fflush(stdout);
-          }
+        // if ( t == Me )
+        //   {
+        //     printf("Task %4d :: "
+        //     "\tgrid coordinates : %3d, %3d\n"
+        //     "\tneighbours: N %4d    E %4d    S %4d    W %4d\n",
+        //     Me, X, Y,
+        //     neighbours[NORTH], neighbours[EAST],
+        //     neighbours[SOUTH], neighbours[WEST] );
+        //     fflush(stdout);
+        //   }
 
         MPI_Barrier(*Comm);
       }
@@ -478,20 +478,20 @@ int initialize ( MPI_Comm *Comm,
   // ··································································
   // allocae the needed memory
   //
-  if ( verbose > 0 ){
-    //printf("task %d is allocating memory for planes and buffers\n", Me);
-    fflush(stdout);
-  }
+  // if ( verbose > 0 ){
+  //   printf("task %d is allocating memory for planes and buffers\n", Me);
+  //   fflush(stdout);
+  // }
   ret = memory_allocate( neighbours, mysize, buffers, planes, verbose );
   
 
   // ··································································
   // allocae the heat sources
   //
-  if ( verbose > 0 ){
-    //printf("task %d is initializing heat sources\n", Me);
-    fflush(stdout);
-  }
+  // if ( verbose > 0 ){
+  //   printf("task %d is initializing heat sources\n", Me);
+  //   fflush(stdout);
+  // }
   ret = initialize_sources( Me, Ntasks, Comm, mysize, *Nsources, Nsources_local, Sources_local );
   
   
@@ -577,7 +577,7 @@ int initialize_sources( int       Me,
   
   free( tasks_with_sources );
 
-  //printf("task %d has %d sources\n", Me, nlocal);
+  // printf("task %d has %d sources\n", Me, nlocal);
 
   return 0;
 }
@@ -698,10 +698,10 @@ int memory_allocate (
     memset( buffers_ptr[RECV][EAST], 0, N[_y_] * sizeof(double) );
   }
 
-  if(verbose > 0){
-    //printf("task is done allocating memory for planes and buffers\n");
-    fflush(stdout);
-  }
+  // if(verbose > 0){
+  //   printf("task is done allocating memory for planes and buffers\n");
+  //   fflush(stdout);
+  // }
 
   return 0;
 }
@@ -732,7 +732,7 @@ int memory_allocate (
       if ( step >= 0 )
 	    //printf(" [ step %4d ] ", step ); fflush(stdout);
 
-      //printf( "total injected energy is %g, "
+      printf( "total injected energy is %g, "
       "system energy is %g "
       "( in avg %g per grid point)\n",
       budget,
