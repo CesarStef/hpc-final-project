@@ -158,13 +158,11 @@ int main(int argc, char **argv)
         for ( uint j = 0; j < sy; j++ )
           planes[current].data[(j + 1) * stride + sx + 1] = buffers[RECV][EAST][j];
       
-      // [C] copy the haloes data
-
       /* --------------------------------------  */
       /* update grid points */
       
       update_plane( periodic, N, &planes[current], &planes[!current] );
-      
+
       /* swap plane indexes for the new iteration */
       current = !current;
       
