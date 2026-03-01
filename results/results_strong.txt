@@ -8,13 +8,13 @@ execution_time, computation_time, communication_time, nodes
 23.518684, 21.136468, 2.381976, 2
   
 total injected energy is 4000, system energy is 4000 ( in avg 0.000568889 per grid point)
-execution_time, computation_time, communication_time
+execution_time, computation_time, communication_time, nodes
 12.573552, 10.738566, 1.834615, 4
   
 total injected energy is 4000, system energy is 4000 ( in avg 0.00113778 per grid point)
-execution_time, computation_time, communication_time
+execution_time, computation_time, communication_time, nodes
 7.006069, 5.298784, 1.707105, 8
   
 total injected energy is 4000, system energy is 4000 ( in avg 0.00227434 per grid point)
-execution_time, computation_time, communication_time
+execution_time, computation_time, communication_time, nodes
 3.596636, 2.566808, 1.029596, 16
