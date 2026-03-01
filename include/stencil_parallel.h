@@ -242,7 +242,7 @@ inline int update_plane_boundary (
     #pragma omp parallel
     {
         // Top & bottom rows (process entire width including corners)
-        #pragma omp for schedule(static)  // static schedule for regular grid
+        #pragma omp for schedule(static) nowait // static schedule for regular grid
         for (uint i = 1; i <= xsize; i++) {
             // top row j=1
             double result1 = old[ IDX(i, j_top) ] * alpha;
@@ -258,7 +258,7 @@ inline int update_plane_boundary (
         }
 
         // Left & right columns (skip corners already processed)
-        #pragma omp for schedule(static)
+        #pragma omp for schedule(static) nowait
         for (uint j = 2; j < ysize; j++) {
             // left column i=1
             double result1 = old[ IDX(i_left, j) ] * alpha;
@@ -335,26 +335,26 @@ inline int update_plane ( const int      periodic,
     double * restrict new = newplane->data;
     
     #pragma omp parallel for schedule(static) collapse(2)// static schedule for regular grid
-        for (uint j = 1; j <= ysize; j++){
-            for ( uint i = 1; i <= xsize; i++)
-            {
-                
-                // NOTE: (i-1,j), (i+1,j), (i,j-1) and (i,j+1) always exist even
-                //       if this patch is at some border without periodic conditions;
-                //       in that case it is assumed that the +-1 points are outside the
-                //       plate and always have a value of 0, i.e. they are an
-                //       "infinite sink" of heat
-                
-                // five-points stencil formula
-                //
-                // HINT : check the serial version for some optimization
-                //
-                new[ IDX(i,j) ] =
-                    old[ IDX(i,j) ] / 2.0 + ( old[IDX(i-1, j)] + old[IDX(i+1, j)] +
-                                            old[IDX(i, j-1)] + old[IDX(i, j+1)] ) /4.0 / 2.0;
-                
-            }
+    for (uint j = 1; j <= ysize; j++){
+        for ( uint i = 1; i <= xsize; i++)
+        {
+            
+            // NOTE: (i-1,j), (i+1,j), (i,j-1) and (i,j+1) always exist even
+            //       if this patch is at some border without periodic conditions;
+            //       in that case it is assumed that the +-1 points are outside the
+            //       plate and always have a value of 0, i.e. they are an
+            //       "infinite sink" of heat
+            
+            // five-points stencil formula
+            //
+            // HINT : check the serial version for some optimization
+            //
+            new[ IDX(i,j) ] =
+                old[ IDX(i,j) ] / 2.0 + ( old[IDX(i-1, j)] + old[IDX(i+1, j)] +
+                                        old[IDX(i, j-1)] + old[IDX(i, j+1)] ) /4.0 / 2.0;
+            
         }
+    }
     // TODO: add the handling of periodic boundaries, if needed
     // if ( periodic )
     // {
@@ -405,11 +405,9 @@ inline int get_total_energy( plane_t *plane,
     // for instance
     #pragma GCC unroll 4
     #pragma omp parallel for schedule(static) collapse(2) reduction(+:totenergy)
-    {
-        for ( int j = 1; j <= ysize; j++ )
-            for ( int i = 1; i <= xsize; i++ )
-                totenergy += data[ IDX(i, j) ];
-    }
+    for ( int j = 1; j <= ysize; j++ )
+        for ( int i = 1; i <= xsize; i++ )
+            totenergy += data[ IDX(i, j) ];
     
    #undef IDX
 
