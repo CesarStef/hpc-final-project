@@ -1,0 +1,21 @@
+Loading openmpi/4.1.6--gcc--12.2.0
+  Loading requirement: gcc/12.2.0-binut2.41
+total injected energy is 4000, system energy is 4000 ( in avg 0.000142222 per grid point)
+execution_time, computation_time, communication_time
+ 45.251847, 42.919829, 2.331688Loading openmpi/4.1.6--gcc--12.2.0
+  Loading requirement: gcc/12.2.0-binut2.41
+total injected energy is 4000, system energy is 4000 ( in avg 0.000142222 per grid point)
+execution_time, computation_time, communication_time
+ 45.509712, 43.113820, 2.395667Loading openmpi/4.1.6--gcc--12.2.0
+  Loading requirement: gcc/12.2.0-binut2.41
+total injected energy is 4000, system energy is 4000 ( in avg 0.000142222 per grid point)
+execution_time, computation_time, communication_time
+ 44.866397, 42.782651, 2.083520Loading openmpi/4.1.6--gcc--12.2.0
+  Loading requirement: gcc/12.2.0-binut2.41
+total injected energy is 4000, system energy is 4000 ( in avg 0.000142222 per grid point)
+execution_time, computation_time, communication_time
+ 45.403276, 43.031002, 2.372030Loading openmpi/4.1.6--gcc--12.2.0
+  Loading requirement: gcc/12.2.0-binut2.41
+total injected energy is 4000, system energy is 4000 ( in avg 0.000142222 per grid point)
+execution_time, computation_time, communication_time
+ 45.114921, 42.308932, 2.805807

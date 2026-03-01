@@ -14,7 +14,7 @@ for NODES in 1 2 4 8 16; do
     
     JOB_NAME="strong_scaling_${NODES}n_${TOTAL_PROCESS}t"
 
-    sbatch --nodes=${NODES} --ntasks-per-node=${NTASKS_PER_NODE} --cpus-per-task=${OMP_NUM_THREADS} --job-name=${JOB_NAME} --export=ALL,GRID_SIZE_X=${GRID_SIZE_X},GRID_SIZE_Y=${GRID_SIZE_Y},N_STEPS=${N_STEPS},OMP_NUM_THREADS=${OMP_NUM_THREADS},JOB_NAME=${JOB_NAME},TOTAL_PROCESS=${TOTAL_PROCESS} run.sh
+    sbatch --nodes=${NODES} --ntasks-per-node=${NTASKS_PER_NODE} --cpus-per-task=${OMP_NUM_THREADS} --job-name=${JOB_NAME} --export=ALL,GRID_SIZE_X=${GRID_SIZE_X},GRID_SIZE_Y=${GRID_SIZE_Y},N_STEPS=${N_STEPS},OMP_NUM_THREADS=${OMP_NUM_THREADS},JOB_NAME=${JOB_NAME},TOTAL_PROCESS=${TOTAL_PROCESS} scripts/run.sh
 done
 
 echo "All Strong Scaling jobs submitted."

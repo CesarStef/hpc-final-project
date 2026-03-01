@@ -37,7 +37,7 @@ for NODES in 1 2 4 8 16; do
            --cpus-per-task=${CPUS_PER_TASK} \
            --job-name=${JOB_NAME} \
            --export=ALL,GRID_SIZE_X=${GRID_SIZE_X},GRID_SIZE_Y=${GRID_SIZE_Y},N_STEPS=${N_STEPS},OMP_NUM_THREADS=${OMP_NUM_THREADS},JOB_NAME=${JOB_NAME},TOTAL_PROCESS=${TOTAL_PROCESS} \
-           run.sh
+           scripts/run.sh
 
     echo "Submitting job with ${NODES} nodes, ${TOTAL_PROCESS} total tasks, grid size ${GRID_SIZE_X}x${GRID_SIZE_Y}"
 done
