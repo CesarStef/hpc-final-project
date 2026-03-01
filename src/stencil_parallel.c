@@ -37,7 +37,6 @@ int main(int argc, char **argv)
     int level_obtained;
     
     // NOTE: change MPI_FUNNELED if appropriate
-    //
     MPI_Init_thread( &argc, &argv, MPI_THREAD_FUNNELED, &level_obtained );
     if ( level_obtained < MPI_THREAD_FUNNELED ) {
       // printf("MPI_thread level obtained is %d instead of %d\n",
@@ -69,6 +68,12 @@ int main(int argc, char **argv)
 
   int current = OLD;
   double t1 = MPI_Wtime();   /* take wall-clock time */
+
+  double communication_time = 0.0; 
+  double total_computation_time = 0.0; 
+  double total_waiting_time = 0.0;
+  double injection_time = t1; // We can accept that the time will be just the time for injection, since it is the first thing we do in the loop
+  //double total_energy_stat_time = 0.0;
   
   //printf("task %d starts the computation with %d sources, and will perform %d iterations\n", Rank, Nsources_local, Niterations);
 
@@ -76,9 +81,10 @@ int main(int argc, char **argv)
   {
       MPI_Request reqs[8];
       
+      
       /* new energy from sources */
       inject_energy( periodic, Nsources_local, Sources_local, energy_per_source, &planes[current], N );
-
+      injection_time = MPI_Wtime() - injection_time;
 
       /* -------------------------------------- */
 
@@ -117,6 +123,8 @@ int main(int argc, char **argv)
 
       int req_count = 0;
 
+      double communication_start = MPI_Wtime(); 
+
       // NORTH communications
       if ( neighbours[NORTH] != MPI_PROC_NULL ) {
         MPI_Isend( buffers[SEND][NORTH], sx, MPI_DOUBLE, neighbours[NORTH], NORTH, myCOMM_WORLD, &reqs[req_count++] );
@@ -145,6 +153,8 @@ int main(int argc, char **argv)
 
       MPI_Waitall( req_count, reqs, MPI_STATUSES_IGNORE );
 
+      communication_time += MPI_Wtime() - communication_start;
+
       //printf("task %d completed all communications for iteration %d\n", Rank, iter);
 
       // [C] copy the halo data from RECV buffers back into the plane frame
@@ -172,17 +182,13 @@ int main(int argc, char **argv)
 
   output_energy_stat ( -1, &planes[!current], Niterations * Nsources*energy_per_source, Rank, &myCOMM_WORLD );
   
-  if ( Rank == 0 ) {
-    printf("Total Computational time: %f seconds\n", t1);
-  }
-  
   memory_release( buffers, planes );
 
-  MPI_Finalize();
+  if ( Rank == 0 ) {
+    printf("Total Execution time: %f seconds\n", t1);
+  }
 
-  // if ( Rank == 0 ) {
-  //   printf("Total execution time: %f seconds\n", t1);
-  // }
+  MPI_Finalize();
 
   return 0;
 }

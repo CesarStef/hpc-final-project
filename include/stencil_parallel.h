@@ -335,7 +335,6 @@ inline int update_plane ( const int      periodic,
     double * restrict new = newplane->data;
     
     #pragma omp parallel for schedule(static) collapse(2)// static schedule for regular grid
-    {
         for (uint j = 1; j <= ysize; j++){
             for ( uint i = 1; i <= xsize; i++)
             {
@@ -356,22 +355,21 @@ inline int update_plane ( const int      periodic,
                 
             }
         }
-    }
-    if ( periodic )
-        {
-            if ( N[_x_] == 1 )
-                {
-                    // propagate the boundaries as needed
-                    // check the serial version
-                }
-  
-            if ( N[_y_] == 1 ) 
-                {
-                    // propagate the boundaries as needed
-                    // check the serial version
-                }
-        }
+    // TODO: add the handling of periodic boundaries, if needed
+    // if ( periodic )
+    // {
+    //     if ( N[_x_] == 1 )
+    //         {
+    //             // propagate the boundaries as needed
+    //             // check the serial version
+    //         }
 
+    //     if ( N[_y_] == 1 ) 
+    //         {
+    //             // propagate the boundaries as needed
+    //             // check the serial version
+    //         }
+    // }
     
  #undef IDX
   return 0;
@@ -406,7 +404,7 @@ inline int get_total_energy( plane_t *plane,
     //       (ii) ask the compiler to do it
     // for instance
     #pragma GCC unroll 4
-    #pragma omp for schedule(static) collapse(2) reduction(+:totenergy)
+    #pragma omp parallel for schedule(static) collapse(2) reduction(+:totenergy)
     {
         for ( int j = 1; j <= ysize; j++ )
             for ( int i = 1; i <= xsize; i++ )
