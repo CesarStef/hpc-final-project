@@ -97,6 +97,8 @@ int main(int argc, char **argv)
       uint sy = planes[current].size[_y_];
       uint stride = sx + 2;
 
+      double communication_start = MPI_Wtime(); 
+
       // NORTH halo: first inner row (row index 1), columns 1..sx
       buffers[SEND][NORTH] = &planes[current].data[1 * stride + 1];
       buffers[RECV][NORTH] = &planes[current].data[0 * stride + 1];
@@ -121,9 +123,7 @@ int main(int argc, char **argv)
       // use Isend / Irecv
       //         --> can you overlap communication and compution in this way?
 
-      int req_count = 0;
-
-      double communication_start = MPI_Wtime(); 
+      int req_count = 0;      
 
       // NORTH communications
       if ( neighbours[NORTH] != MPI_PROC_NULL ) {
@@ -153,8 +153,6 @@ int main(int argc, char **argv)
 
       MPI_Waitall( req_count, reqs, MPI_STATUSES_IGNORE );
 
-      communication_time += MPI_Wtime() - communication_start;
-
       //printf("task %d completed all communications for iteration %d\n", Rank, iter);
 
       // [C] copy the halo data from RECV buffers back into the plane frame
@@ -168,6 +166,7 @@ int main(int argc, char **argv)
         for ( uint j = 0; j < sy; j++ )
           planes[current].data[(j + 1) * stride + sx + 1] = buffers[RECV][EAST][j];
       
+      communication_time += MPI_Wtime() - communication_start;
       /* --------------------------------------  */
       /* update grid points */
       
