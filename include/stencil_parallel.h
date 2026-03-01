@@ -335,10 +335,9 @@ inline int update_plane ( const int      periodic,
     double * restrict new = newplane->data;
     
     #pragma omp parallel for schedule(static) collapse(2)// static schedule for regular grid
-    for (uint j = 1; j <= ysize; j++){
+    for (uint j = 1; j <= ysize; j++)
         for ( uint i = 1; i <= xsize; i++)
         {
-            
             // NOTE: (i-1,j), (i+1,j), (i,j-1) and (i,j+1) always exist even
             //       if this patch is at some border without periodic conditions;
             //       in that case it is assumed that the +-1 points are outside the
@@ -352,9 +351,7 @@ inline int update_plane ( const int      periodic,
             new[ IDX(i,j) ] =
                 old[ IDX(i,j) ] / 2.0 + ( old[IDX(i-1, j)] + old[IDX(i+1, j)] +
                                         old[IDX(i, j-1)] + old[IDX(i, j+1)] ) /4.0 / 2.0;
-            
         }
-    }
     // TODO: add the handling of periodic boundaries, if needed
     // if ( periodic )
     // {
@@ -384,7 +381,6 @@ inline int get_total_energy( plane_t *plane,
  *       parallelization
  */
 {
-
     const int register xsize = plane->size[_x_];
     const int register ysize = plane->size[_y_];
     const int register fsize = xsize+2;
@@ -402,8 +398,6 @@ inline int get_total_energy( plane_t *plane,
     // HINT: you may attempt to
     //       (i)  manually unroll the loop
     //       (ii) ask the compiler to do it
-    // for instance
-    #pragma GCC unroll 4
     #pragma omp parallel for schedule(static) collapse(2) reduction(+:totenergy)
     for ( int j = 1; j <= ysize; j++ )
         for ( int i = 1; i <= xsize; i++ )
