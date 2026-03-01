@@ -70,7 +70,7 @@ int main(int argc, char **argv)
   double t1 = MPI_Wtime();   /* take wall-clock time */
 
   double communication_time = 0.0; 
-  double total_computation_time = 0.0; 
+  double computation_time = 0.0; 
   double total_waiting_time = 0.0;
   double injection_time = t1; // We can accept that the time will be just the time for injection, since it is the first thing we do in the loop
   //double total_energy_stat_time = 0.0;
@@ -171,7 +171,9 @@ int main(int argc, char **argv)
       /* --------------------------------------  */
       /* update grid points */
       
+      double step_computation_time = MPI_Wtime(); // Start computation timer
       update_plane( periodic, N, &planes[current], &planes[!current] );
+      computation_time += MPI_Wtime() - step_computation_time; // End computation timer
 
       /* swap plane indexes for the new iteration */
       current = !current;
@@ -185,7 +187,7 @@ int main(int argc, char **argv)
   memory_release( buffers, planes );
 
   if ( Rank == 0 ) {
-    printf("Total Execution time: %f seconds\n", t1);
+    printf("execution_time, computation_time, communication_time\n %f, %f, %f", t1, computation_time, communication_time);
   }
 
   MPI_Finalize();
